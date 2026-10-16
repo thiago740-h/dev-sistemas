@@ -1,21 +1,20 @@
 from fastapi import FastAPI
-from database import engine, Base
-from router import router as produto_router
+import database
+import models
+from router import router as livros_router
 
-# Criar as tabelas no banco ao iniciar a API
-# Se o banco.db não existir, cria o arquivo e as tabelas
-# Se já existir, não faz nada - não apaga os dados
-Base.metadata.create_all(bind=engine)
+# Cria as tabelas no banco de dados SQLite caso ainda não existam
+models.Base.metadata.create_all(bind=database.engine)
 
 app = FastAPI(
-    tittle="API de Produtos - SENAI",
-    description="CRUD com FastAPI + SQLAlchemy + SQLite",
-    version="2.0.0"
+    title="API de Livros",
+    description="API para gerenciamento e cadastro de livros",
+    version="1.0.0",
 )
 
-# Registra o router com prefixo /produtos
-app.include_router(produto_router)
+app.include_router(livros_router)
 
-@app.get('/')
-def raiz():
-    return {"status":"online", "docs":"/docs", "versao":"2.0.0"}
+
+@app.get("/")
+def root():
+    return {"message": "API de Livros rodando com sucesso!"}
